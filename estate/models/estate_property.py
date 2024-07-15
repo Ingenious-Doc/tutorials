@@ -29,6 +29,7 @@ class estate_property(models.Model):
     living_area=fields.Integer()
     facades=fields.Integer()
     garage=fields.Boolean()
+    buyer_id=fields.Many2one('res.partner',readonly=True)
     garden_area=fields.Integer()
     garden_orientation=fields.Selection(
     string='Type',
