@@ -17,7 +17,7 @@ class estate_property(models.Model):
     #
     property_type=fields.Many2one("estate.property.type",string="Property Type")
     property_tags=fields.Many2many("estate.property.tags", string='Property Tags')
-    salesman_id=fields.Many2one("res.partner",string="Salesman")
+    salesman_id=fields.Many2one("res.users",string="Salesman")
     offers=fields.One2many("estate.property.offer","property_id",string="Offers")
     best_price=fields.Float(defualt=1,compute="_best_offer",stored=True)
     status=fields.Selection(string='Status',readonly=True,selection=[('new',"New"),('sold', 'Sold'),('cancelled','Cancelled')])
@@ -56,6 +56,16 @@ class estate_property(models.Model):
             else:
                 record.selling_price=0
                 record.best_price=0
+    
+
+    
+    @api.ondelete(at_uninstall=False)
+    def _unlink_if_new(self):
+        if self.state!='new' and self.state!='cancel':
+            raise UserError("can't delete a not cancelled or new record")
+
+
+
 
     @api.constrains('selling_price')
     def _check_best_price(self):
@@ -82,4 +92,3 @@ class estate_property(models.Model):
                 record.state='cancel'
             else:
                 raise UserError('Sold Property cannot be cancelled')
-

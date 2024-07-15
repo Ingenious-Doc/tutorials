@@ -12,7 +12,7 @@ class estate_property_offer(models.Model):
     property_id=fields.Many2one('estate.property',required=True)
     validity= fields.Integer(default=7)
     date_deadline=fields.Date(compute="_compute_deadline",default=datetime.now(),inverse="_compute_validity")
-    property_type_id=fields.Many2one(related='property_id.property_type')
+    property_type_id=fields.Many2one(related='property_id.property_type',store=True)
 
     _sql_constraints=[
             ('check_price', 'CHECK(price>0 )','The offer price must be greater than 0'),
@@ -27,18 +27,20 @@ class estate_property_offer(models.Model):
             record.validity=(record.date_deadline-datetime.now().date()).days
     
     #Borrowed code... testing couldn't really understand this
+    #because I wasn't supposed to reach here until later...
     @api.model
     def create(self,vals):
         if vals.get("property_id") and vals.get("price"):
-            prop = self.env["estate.property"].browse(vals["property_id"])
-            # We check if the offer is higher than the existing offers
+            prop=self.env['estate.property'].browse(vals['property_id'])
             if prop.offers:
-                max_offer = max(prop.mapped("offers.price"))
-                if float_compare(vals["price"], max_offer, precision_rounding=0.01) <= 0:
+                max_offer=max(prop.offers.mapped('price'))
+                if float_compare(vals['price'],max_offer,precision_rounding=0)<=0:
                     raise UserError("The offer must be higher than %.2f" % max_offer)
-            prop.state = "received"
+            prop.state='received'
+            
         return super().create(vals)
-    
+
+
     def accept_offer(self):
         for record in self:
             if 'accepted' in record.property_id.offers.mapped('offer_status'):
