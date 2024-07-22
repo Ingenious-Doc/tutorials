@@ -6,7 +6,7 @@
     'description':'it is an app that does the name',
     'website':'https://www.odoo.com/page/last_price',
     'depends':['base','sale_management'],
-    'application':True,
+    'data':['views/sale_order_line.xml'],
     'installable':True
 
 }
