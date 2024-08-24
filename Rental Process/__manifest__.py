@@ -1,9 +1,8 @@
-# noinspection PyStatementEffect
 {
-    'name': 'Previous Sales price',
+    'name': 'Rental Custo',
     'version': '0.01',
     'sequence': 14,
-    'summary': 'previous sales price based on customer and product',
+    'summary': 'rentals',
     'description': 'it is an app that does the name',
     'website': 'https://www.odoo.com/page/last_price',
     'depends': ['base', 'sale_management'],
